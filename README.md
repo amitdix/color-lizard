@@ -10,7 +10,8 @@ This is configuration driven. Below is sample configuration:
   
 
 
-`[
+```
+[
   {
     "path": "oauth/token",
     "status": 200,
@@ -22,7 +23,7 @@ This is configuration driven. Below is sample configuration:
     }
   }
 ]
-`
+```
 
 
  
