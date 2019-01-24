@@ -1,0 +1,32 @@
+[
+  {
+    "method": "GET",
+    "path": "oauth/token",
+    "status": 200,
+    "response": "{\"result\": \"test1\"}",
+    "headers": {
+      "header1": "value1",
+      "header2": "value2"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "test2/test2",
+    "status": 201,
+    "response": "{\"result\": \"test2\"}",
+    "headers": {
+      "header1": "value1",
+      "header2": "value2"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "test3/test3",
+    "status": 206,
+    "response": "{\"result\": \"test3\"}",
+    "headers": {
+      "header1": "value1",
+      "header2": "value2"
+    }
+  }
+]
