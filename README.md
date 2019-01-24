@@ -25,5 +25,8 @@ This is configuration driven. Below is sample configuration:
 ]
 ```
 
+```
+curl -X GET 'http://localhost:8881/colorlizard/oauth/token?test=1'
 
- 
+{"result": "test1"}
+```
