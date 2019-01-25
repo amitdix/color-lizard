@@ -1,0 +1,74 @@
+# To run drone locally drone exec --secret DOCKER_REPO_USERNAME=<username> --secret DOCKER_REPO_PASSWORD=<password>
+workspace:
+  base: /go/src/git.target.com/StoreDataMovement
+  path: /color-lizard
+
+#****************************CLONE****************************
+
+clone:
+  git:
+    image: plugins/git
+    tags: true
+    commands:
+
+#***********************BUILD and TEST************************
+pipeline:
+  build:
+    group: build
+    image: golang:latest
+    commands:
+    - CGO_ENABLED=1 GOOS=linux go build -a ./cmd/color-lizard.go
+    when:
+      event: [push, tag]
+
+  ##***************************PUBLISH***************************
+
+  publish-latest:
+    group: publish
+    image: plugins/docker
+    registry: docker.target.com
+    repo: docker.target.com/app/color-lizard
+    secrets: [docker_username, docker_password]
+    tag:
+    - latest
+    when:
+      event: push
+      branch: master
+      build: success
+
+  publish-stable:
+    group: publish
+    image: plugins/docker
+    registry: docker.target.com
+    repo: docker.target.com/app/color-lizard
+    secrets: [docker_username, docker_password]
+    build_args:
+    - docker_tag=${DRONE_TAG}
+    tag:
+    - stable
+    when:
+      event: push
+      branch: master
+      build: success
+
+  publish-version-tag:
+    group: publish
+    image: plugins/docker
+    registry: docker.target.com
+    repo: docker.target.com/app/color-lizard
+    secrets: [ docker_username, docker_password ]
+    build_args:
+    - drone_tag=${DRONE_TAG}
+    - drone_commit=${DRONE_COMMIT}
+    tag:
+    - ${DRONE_TAG}
+    when:
+      event: tag
+
+
+#***************************SECRETS***************************
+secrets:
+  docker_username:
+    path: secret/org/StoreDataMovement/artifactory_user
+  docker_password:
+    path: secret/org/StoreDataMovement/artifactory_password
