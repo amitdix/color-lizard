@@ -6,13 +6,12 @@ import (
 )
 type Endpoint struct {
 	Method string `json:"method"`
-	Path string `json:path`
 	Status int `json:status`
 	Response string `json:response`
 	Headers map[string]string `json:"headers"`
 }
 
-func ReadMockEndpointsData(endpoints *[]Endpoint) error {
+func ReadMockEndpointsData(endpointMap *map[string]Endpoint) error {
 	mappingFile := "./config.json"
 	if file := os.Getenv("MAPPING_FILE"); file != "" {
 		mappingFile = file
@@ -23,7 +22,7 @@ func ReadMockEndpointsData(endpoints *[]Endpoint) error {
 	}
 	d := json.NewDecoder(f)
 	d.UseNumber()
-	err = d.Decode(&endpoints)
+	err = d.Decode(&endpointMap)
 	if err != nil {
 		return err
 	}
