@@ -5,7 +5,6 @@ import (
 	"git.target.com/StoreDataMovement/api-rerouter/util"
 	"git.target.com/StoreDataMovement/color-lizard/config"
 	"github.com/gin-gonic/gin"
-	"github.com/rs/zerolog/log"
 	"net/http"
 	"strings"
 )
@@ -43,22 +42,23 @@ func GetRouter(endpointMap map[string]config.Endpoint, ready *bool) (r *gin.Engi
 		body, err := context.GetRawData()
 		//bodyString := bytes.NewBuffer(body).String()
 		if err != nil || body == nil || len(body) == 0 {
-			log.Error().Err(err).Msg("Error reading body.")
 			context.JSON(http.StatusBadRequest, util.CreateError("Can't read request body", http.StatusBadRequest))
 			return
 		}
 		var data map[string]config.Endpoint
 		err = json.Unmarshal(body, &data)
 		if err != nil || len(data) == 0 {
-			log.Error().Err(err).Msg("Error parsing JSON from body.")
 			context.JSON(http.StatusBadRequest, util.CreateError("Bad format: data not valid JSON.", http.StatusBadRequest))
 			return
 		}
-
 		for k, v := range data {
+			if !strings.HasPrefix(k,"/") {
+				context.JSON(http.StatusBadRequest,"Adding Endpoints Without / prefix is not permitted, Please Fix and POST again")
+				return
+			}
 			endpointMap[k] = v
 		}
-		context.JSON(http.StatusOK,"Successfully Added New Endpoints")
+		context.JSON(http.StatusOK,"Successfully Added New Endpoints, To Overwrite the endpoint POST with the same key")
 	})
 	r.GET("/colorlizard/*path", func(context *gin.Context) {
 		path := context.Param("path")
@@ -68,6 +68,7 @@ func GetRouter(endpointMap map[string]config.Endpoint, ready *bool) (r *gin.Engi
 					context.Header(key, value)
 				}
 				context.Data(endpoint.Status, "application/json; charset=utf-8", []byte(endpoint.Response))
+				return
 			}
 		}
 		context.JSON(http.StatusNotFound, "application/json; charset=utf-8")
@@ -81,6 +82,7 @@ func GetRouter(endpointMap map[string]config.Endpoint, ready *bool) (r *gin.Engi
 					context.Header(key, value)
 				}
 				context.Data(endpoint.Status, "application/json; charset=utf-8", []byte(endpoint.Response))
+				return
 			}
 		}
 		context.JSON(http.StatusNotFound, "application/json; charset=utf-8")
@@ -107,6 +109,7 @@ func GetRouter(endpointMap map[string]config.Endpoint, ready *bool) (r *gin.Engi
 					context.Header(key, value)
 				}
 				context.Data(endpoint.Status, "application/json; charset=utf-8", []byte(endpoint.Response))
+				return
 			}
 		}
 		context.JSON(http.StatusNotFound, "application/json; charset=utf-8")
