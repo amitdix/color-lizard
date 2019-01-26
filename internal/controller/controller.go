@@ -36,23 +36,8 @@ func GetRouter(endpoints []config.Endpoint, ready *bool) (r *gin.Engine) {
 		})
 	})
 
-	r.GET("/colorlizard/:first/:second", func(context *gin.Context) {
-		first := context.Param("first")
-		second := context.Param("second")
-		path := first + "/" + second
-		for _, endpoint := range endpoints{
-			if path == endpoint.Path && endpoint.Method == "GET" {
-				for key, value := range endpoint.Headers{
-					context.Header(key, value)
-				}
-				context.Data(endpoint.Status, "application/json; charset=utf-8", []byte(endpoint.Response))
-				break
-			}
-		}
-		context.JSON(http.StatusNotFound, "application/json; charset=utf-8")
-	})
-	r.GET("/colorlizard/:first", func(context *gin.Context) {
-		first := context.Param("first")
+	r.GET("/colorlizard/*path", func(context *gin.Context) {
+		first := context.Param("path")
 		path := first
 		for _, endpoint := range endpoints{
 			if path == endpoint.Path && endpoint.Method == "GET" {
@@ -66,23 +51,8 @@ func GetRouter(endpoints []config.Endpoint, ready *bool) (r *gin.Engine) {
 		context.JSON(http.StatusNotFound, "application/json; charset=utf-8")
 	})
 
-	r.POST("/colorlizard/:first/:second", func(context *gin.Context) {
-		first := context.Param("first")
-		second := context.Param("second")
-		path := first + "/" + second
-		for _, endpoint := range endpoints{
-			if path == endpoint.Path && endpoint.Method == "POST" {
-				for key, value := range endpoint.Headers{
-					context.Header(key, value)
-				}
-				context.Data(endpoint.Status, "application/json; charset=utf-8", []byte(endpoint.Response))
-				break
-			}
-		}
-		context.JSON(http.StatusNotFound, "application/json; charset=utf-8")
-	})
-	r.POST("/colorlizard/:first", func(context *gin.Context) {
-		first := context.Param("first")
+	r.POST("/colorlizard/*path", func(context *gin.Context) {
+		first := context.Param("path")
 		path := first
 		for _, endpoint := range endpoints{
 			if path == endpoint.Path && endpoint.Method == "POST" {
@@ -96,10 +66,9 @@ func GetRouter(endpoints []config.Endpoint, ready *bool) (r *gin.Engine) {
 		context.JSON(http.StatusNotFound, "application/json; charset=utf-8")
 	})
 
-	r.PUT("/colorlizard/:first/:second", func(context *gin.Context) {
-		first := context.Param("first")
-		second := context.Param("second")
-		path := first + "/" + second
+	r.PUT("/colorlizard/*path", func(context *gin.Context) {
+		first := context.Param("path")
+		path := first
 		for _, endpoint := range endpoints{
 			if path == endpoint.Path && endpoint.Method == "PUT" {
 				for key, value := range endpoint.Headers{
@@ -111,11 +80,13 @@ func GetRouter(endpoints []config.Endpoint, ready *bool) (r *gin.Engine) {
 		}
 		context.JSON(http.StatusNotFound, "application/json; charset=utf-8")
 	})
-	r.PUT("/colorlizard/:first", func(context *gin.Context) {
-		first := context.Param("first")
+
+
+	r.DELETE("/colorlizard/*path", func(context *gin.Context) {
+		first := context.Param("path")
 		path := first
 		for _, endpoint := range endpoints{
-			if path == endpoint.Path && endpoint.Method == "PUT" {
+			if path == endpoint.Path && endpoint.Method == "DELETE" {
 				for key, value := range endpoint.Headers{
 					context.Header(key, value)
 				}

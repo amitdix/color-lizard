@@ -1,7 +1,7 @@
 [
   {
     "method": "GET",
-    "path": "oauth/token",
+    "path": "/oauth/token",
     "status": 200,
     "response": "{\"result\": \"test1\"}",
     "headers": {
@@ -11,7 +11,7 @@
   },
   {
     "method": "POST",
-    "path": "test2/test2",
+    "path": "/test2/test2",
     "status": 201,
     "response": "{\"result\": \"test2\"}",
     "headers": {
@@ -21,7 +21,7 @@
   },
   {
     "method": "GET",
-    "path": "test3/test3",
+    "path": "/test3/test3",
     "status": 206,
     "response": "{\"result\": \"test3\"}",
     "headers": {
