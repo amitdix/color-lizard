@@ -1,14 +1,15 @@
 package controller
 
 import (
+	"encoding/json"
+	"git.target.com/StoreDataMovement/api-rerouter/util"
 	"git.target.com/StoreDataMovement/color-lizard/config"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strings"
 )
 
-
-
-func GetRouter(endpoints []config.Endpoint, ready *bool) (r *gin.Engine) {
+func GetRouter(endpointMap map[string]config.Endpoint, ready *bool) (r *gin.Engine) {
 	gin.SetMode(gin.ReleaseMode)
 	r = gin.Default()
 
@@ -36,91 +37,79 @@ func GetRouter(endpoints []config.Endpoint, ready *bool) (r *gin.Engine) {
 		})
 	})
 
-	r.GET("/colorlizard/:first/:second", func(context *gin.Context) {
-		first := context.Param("first")
-		second := context.Param("second")
-		path := first + "/" + second
-		for _, endpoint := range endpoints{
-			if path == endpoint.Path && endpoint.Method == "GET" {
-				for key, value := range endpoint.Headers{
-					context.Header(key, value)
-				}
-				context.Data(endpoint.Status, "application/json; charset=utf-8", []byte(endpoint.Response))
-				break
-			}
+	r.POST("/add", func(context *gin.Context) {
+		//endpoints.endpoints
+		body, err := context.GetRawData()
+		//bodyString := bytes.NewBuffer(body).String()
+		if err != nil || body == nil || len(body) == 0 {
+			context.JSON(http.StatusBadRequest, util.CreateError("Can't read request body", http.StatusBadRequest))
+			return
 		}
-		context.JSON(http.StatusNotFound, "application/json; charset=utf-8")
-	})
-	r.GET("/colorlizard/:first", func(context *gin.Context) {
-		first := context.Param("first")
-		path := first
-		for _, endpoint := range endpoints{
-			if path == endpoint.Path && endpoint.Method == "GET" {
-				for key, value := range endpoint.Headers{
-					context.Header(key, value)
-				}
-				context.Data(endpoint.Status, "application/json; charset=utf-8", []byte(endpoint.Response))
-				break
-			}
+		var data map[string]config.Endpoint
+		err = json.Unmarshal(body, &data)
+		if err != nil || len(data) == 0 {
+			context.JSON(http.StatusBadRequest, util.CreateError("Bad format: data not valid JSON.", http.StatusBadRequest))
+			return
 		}
-		context.JSON(http.StatusNotFound, "application/json; charset=utf-8")
-	})
-
-	r.POST("/colorlizard/:first/:second", func(context *gin.Context) {
-		first := context.Param("first")
-		second := context.Param("second")
-		path := first + "/" + second
-		for _, endpoint := range endpoints{
-			if path == endpoint.Path && endpoint.Method == "POST" {
-				for key, value := range endpoint.Headers{
-					context.Header(key, value)
-				}
-				context.Data(endpoint.Status, "application/json; charset=utf-8", []byte(endpoint.Response))
-				break
+		for k, v := range data {
+			if !strings.HasPrefix(k,"/") {
+				context.JSON(http.StatusBadRequest,"Adding Endpoints Without / prefix is not permitted, Please Fix and POST again")
+				return
 			}
+			endpointMap[k] = v
 		}
-		context.JSON(http.StatusNotFound, "application/json; charset=utf-8")
+		context.JSON(http.StatusOK,"Successfully Added New Endpoints, To Overwrite the endpoint POST with the same key")
 	})
-	r.POST("/colorlizard/:first", func(context *gin.Context) {
-		first := context.Param("first")
-		path := first
-		for _, endpoint := range endpoints{
-			if path == endpoint.Path && endpoint.Method == "POST" {
-				for key, value := range endpoint.Headers{
+	r.GET("/colorlizard/*path", func(context *gin.Context) {
+		path := context.Param("path")
+		if endpoint, ok := endpointMap[path]; ok {
+			if strings.EqualFold(endpoint.Method, "GET") {
+				for key, value := range endpoint.Headers {
 					context.Header(key, value)
 				}
 				context.Data(endpoint.Status, "application/json; charset=utf-8", []byte(endpoint.Response))
-				break
+				return
 			}
 		}
 		context.JSON(http.StatusNotFound, "application/json; charset=utf-8")
 	})
 
-	r.PUT("/colorlizard/:first/:second", func(context *gin.Context) {
-		first := context.Param("first")
-		second := context.Param("second")
-		path := first + "/" + second
-		for _, endpoint := range endpoints{
-			if path == endpoint.Path && endpoint.Method == "PUT" {
-				for key, value := range endpoint.Headers{
+	r.POST("/colorlizard/*path", func(context *gin.Context) {
+		path := context.Param("path")
+		if endpoint, ok := endpointMap[path]; ok {
+			if strings.EqualFold(endpoint.Method, "POST") {
+				for key, value := range endpoint.Headers {
 					context.Header(key, value)
 				}
 				context.Data(endpoint.Status, "application/json; charset=utf-8", []byte(endpoint.Response))
-				break
+				return
 			}
 		}
 		context.JSON(http.StatusNotFound, "application/json; charset=utf-8")
 	})
-	r.PUT("/colorlizard/:first", func(context *gin.Context) {
-		first := context.Param("first")
-		path := first
-		for _, endpoint := range endpoints{
-			if path == endpoint.Path && endpoint.Method == "PUT" {
-				for key, value := range endpoint.Headers{
+
+	r.PUT("/colorlizard/*path", func(context *gin.Context) {
+		path := context.Param("path")
+		if endpoint, ok := endpointMap[path]; ok {
+			if strings.EqualFold(endpoint.Method, "PUT") {
+				for key, value := range endpoint.Headers {
 					context.Header(key, value)
 				}
 				context.Data(endpoint.Status, "application/json; charset=utf-8", []byte(endpoint.Response))
-				break
+			}
+		}
+		context.JSON(http.StatusNotFound, "application/json; charset=utf-8")
+	})
+
+	r.DELETE("/colorlizard/*path", func(context *gin.Context) {
+		path := context.Param("path")
+		if endpoint, ok := endpointMap[path]; ok {
+			if strings.EqualFold(endpoint.Method, "DELETE") {
+				for key, value := range endpoint.Headers {
+					context.Header(key, value)
+				}
+				context.Data(endpoint.Status, "application/json; charset=utf-8", []byte(endpoint.Response))
+				return
 			}
 		}
 		context.JSON(http.StatusNotFound, "application/json; charset=utf-8")
@@ -128,4 +117,3 @@ func GetRouter(endpoints []config.Endpoint, ready *bool) (r *gin.Engine) {
 
 	return r
 }
-
