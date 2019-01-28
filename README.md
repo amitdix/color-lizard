@@ -7,8 +7,7 @@ Target version of more open mockey
 This allows developers to mock their GET, POST, PUT endpoints for desired response status code, response headers and response
 
 This is configuration driven. Below is sample configuration:
-
-  
+Additionally you can use localhost:8881/add with the configuration as the body to POST your configuration at runtime.
 
 
 ```
