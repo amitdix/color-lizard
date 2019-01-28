@@ -96,6 +96,7 @@ func GetRouter(endpointMap map[string]config.Endpoint, ready *bool) (r *gin.Engi
 					context.Header(key, value)
 				}
 				context.Data(endpoint.Status, "application/json; charset=utf-8", []byte(endpoint.Response))
+				return
 			}
 		}
 		context.JSON(http.StatusNotFound, "application/json; charset=utf-8")
