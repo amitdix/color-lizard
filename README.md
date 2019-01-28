@@ -12,18 +12,26 @@ This is configuration driven. Below is sample configuration:
 
 
 ```
-[
-  {
-    "path": "oauth/token",
-    "status": 200,
-    "response": "{\"result\": \"test1\"}", 
-    "method": "GET", 
-    "headers": {
-      "header1": "value1",
-      "header2": "value2"
+{
+    "/oauth/token":{
+    "method":"GET",
+    "status":200,
+    "response":"{\"result\": \"test1\"}",
+    "headers":{
+      "header1":"value1",
+      "header2":"value2"
+    }
+  },
+   "/test2/test2":{
+    "method":"POST",
+    "status":201,
+    "response":"{\"result\": \"test2\"}",
+    "headers":{
+      "header1":"value1",
+      "header2":"value2"
     }
   }
-]
+}
 ```
 
 ```
