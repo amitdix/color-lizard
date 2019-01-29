@@ -19,7 +19,7 @@ WORKDIR /cmd/
 RUN ls
 
 EXPOSE 8080
-COPY --from=0 /go/src/git.target.com/StoreDataMovement/color-lizard/color-lizard .
+COPY --from=0 /go/src/git.target.com/StoreDataMovement/color-lizard/colorlizard .
 RUN ls
 
-CMD ./color-lizard
+CMD ./colorlizard
