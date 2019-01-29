@@ -20,6 +20,7 @@ RUN ls
 
 EXPOSE 8080
 COPY --from=0 /go/src/git.target.com/StoreDataMovement/color-lizard/colorlizard .
+COPY --from=0 /go/src/git.target.com/StoreDataMovement/color-lizard/config.json .
 RUN ls
 
 CMD ./colorlizard
