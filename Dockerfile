@@ -8,7 +8,7 @@ ARG drone_commit
 ENV VERSION=${drone_tag}
 ENV IMAGE=${drone_commit}
 
-RUN go build -ldflags "-X main.version=${VERSION} -X main.image=${IMAGE}" ./cmd/color-lizard.go
+RUN go build -ldflags "-X main.version=${VERSION} -X main.image=${IMAGE}" ./cmd/colorlizard.go
 
 FROM docker.target.com/tap/alpine-certs
 
