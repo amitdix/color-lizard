@@ -38,3 +38,34 @@ curl -X GET 'http://localhost:8881/colorlizard/oauth/token?test=1'
 
 {"result": "test1"}
 ```
+
+# How to add new endpoints
+
+```
+curl -X POST \
+  https://colorlizard-tgt.dev.target.com/add \
+  -H 'postman-token: 67319743-3171-d815-371c-e1de2aba087e' \
+  -d '  {"/promo": {
+    "method": "PUT",
+    "status": 200,
+    "response": "{\"Validation error\": \"ok\"}",
+    "headers": {
+      "header1": "value1",
+      "header2": "value2"
+    }
+  }}
+
+```
+Above will create new endpoint 
+
+```curl -X PUT \
+    http://colorlizard-tgt.dev.target.com/colorlizard/promo
+```
+
+which will give result as 
+
+```
+{
+    "Validation error": "ok"
+}
+``` 
