@@ -1,1 +1,1 @@
-web: color-lizard
+web: colorlizard
