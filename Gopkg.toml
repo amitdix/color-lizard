@@ -1,6 +1,6 @@
 # Gopkg.toml example
 #
-# Refer to https://github.com/golang/dep/blob/master/docs/Gopkg.toml.md
+# Refer to https://golang.github.io/dep/docs/Gopkg.toml.html
 # for detailed Gopkg.toml documentation.
 #
 # required = ["github.com/user/thing/cmd/thing"]
@@ -25,9 +25,9 @@
 #   unused-packages = true
 
 
-[[constraint]]
-  name = "github.com/caarlos0/env"
-  version = "3.5.0"
+[prune]
+  go-tests = true
+  unused-packages = true
 
 [[constraint]]
   name = "github.com/gin-gonic/gin"
@@ -35,15 +35,4 @@
 
 [[constraint]]
   name = "github.com/rs/zerolog"
-  version = "1.11.0"
-
-[prune]
-  go-tests = true
-  unused-packages = true
-
-[metadata.heroku]
-  root-package = "github.com/heroku/fixture"
-  go-version = "go1.8.3"
-  install = [ "./cmd/...", "./foo" ]
-  ensure = "false"
-  additional-tools = ["github.com/golang-migrate/migrate"]
+  version = "1.12.0"

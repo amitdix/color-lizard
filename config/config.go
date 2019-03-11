@@ -4,11 +4,12 @@ import (
 	"encoding/json"
 	"os"
 )
+
 type Endpoint struct {
-	Method string `json:"method"`
-	Status int `json:status`
-	Response string `json:response`
-	Headers map[string]string `json:"headers"`
+	Method   string            `json:"method"`
+	Status   int               `json:status`
+	Response string            `json:response`
+	Headers  map[string]string `json:"headers"`
 }
 
 func ReadMockEndpointsData(endpointMap *map[string]Endpoint) error {

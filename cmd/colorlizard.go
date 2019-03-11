@@ -1,13 +1,16 @@
 package main
 
 import (
-	"../config"
-	"../internal/controller"
-	"github.com/rs/zerolog/log"
 	"net/http"
+
+	"color-lizard/config"
+
+	"color-lizard/internal/controller"
+
+	"github.com/rs/zerolog/log"
 )
 
-func main(){
+func main() {
 	ready := true
 	// Read the ENV variables
 	var endpointMap map[string]config.Endpoint

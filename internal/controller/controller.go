@@ -1,11 +1,12 @@
 package controller
 
 import (
+	"color-lizard/config"
 	"encoding/json"
-	"../../config"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 func GetRouter(endpointMap map[string]config.Endpoint, ready *bool) (r *gin.Engine) {
@@ -41,23 +42,23 @@ func GetRouter(endpointMap map[string]config.Endpoint, ready *bool) (r *gin.Engi
 		body, err := context.GetRawData()
 		//bodyString := bytes.NewBuffer(body).String()
 		if err != nil || body == nil || len(body) == 0 {
-                        context.JSON(http.StatusBadRequest, "Can't read request body")
+			context.JSON(http.StatusBadRequest, "Can't read request body")
 			return
 		}
 		var data map[string]config.Endpoint
 		err = json.Unmarshal(body, &data)
 		if err != nil || len(data) == 0 {
-                        context.JSON(http.StatusBadRequest, "Bad format: data not valid JSON.")
+			context.JSON(http.StatusBadRequest, "Bad format: data not valid JSON.")
 			return
 		}
 		for k, v := range data {
-			if !strings.HasPrefix(k,"/") {
-				context.JSON(http.StatusBadRequest,"Adding Endpoints Without / prefix is not permitted, Please Fix and POST again")
+			if !strings.HasPrefix(k, "/") {
+				context.JSON(http.StatusBadRequest, "Adding Endpoints Without / prefix is not permitted, Please Fix and POST again")
 				return
 			}
 			endpointMap[k] = v
 		}
-		context.JSON(http.StatusOK,"Successfully Added New Endpoints, To Overwrite the endpoint POST with the same key")
+		context.JSON(http.StatusOK, "Successfully Added New Endpoints, To Overwrite the endpoint POST with the same key")
 	})
 	r.GET("/colorlizard/*path", func(context *gin.Context) {
 		path := context.Param("path")
