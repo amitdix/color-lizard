@@ -1,8 +1,8 @@
 package main
 
 import (
-	"git.target.com/StoreDataMovement/color-lizard/config"
-	"git.target.com/StoreDataMovement/color-lizard/internal/controller"
+	"color-lizard/config"
+	"color-lizard/internal/controller"
 	"github.com/rs/zerolog/log"
 	"net/http"
 )
