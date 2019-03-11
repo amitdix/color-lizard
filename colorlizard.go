@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/color-lizard/config"
 
@@ -20,7 +21,8 @@ func main() {
 	}
 	router := controller.GetRouter(endpointMap, &ready)
 
-	http.ListenAndServe(":5000", router)
+	port := os.Getenv("PORT")
+	http.ListenAndServe(port, router)
 	log.Error().Err(err).Msg("Exited")
 
 }
