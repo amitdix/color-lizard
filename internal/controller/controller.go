@@ -1,11 +1,11 @@
 package controller
 
 import (
-	"color-lizard/config"
 	"encoding/json"
 	"net/http"
 	"strings"
 
+	"github.com/amitdix/color-lizard/config"
 	"github.com/gin-gonic/gin"
 )
 
