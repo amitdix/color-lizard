@@ -1,1 +1,1 @@
-web: ./colorlizard
+web: colorlizard
