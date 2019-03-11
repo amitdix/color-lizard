@@ -1,1 +1,1 @@
-web: color-lizard -p 5000
+web: color-lizard -p $PORT
