@@ -1,0 +1,95 @@
+{
+	"ImportPath": "github.com/color-lizard",
+	"GoVersion": "go1.12",
+	"GodepVersion": "v80",
+	"Deps": [
+		{
+			"ImportPath": "github.com/gin-contrib/sse",
+			"Rev": "5545eab6dad3bbbd6c5ae9186383c2a9d23c0dae"
+		},
+		{
+			"ImportPath": "github.com/gin-gonic/gin",
+			"Comment": "v1.3.0-137-g4a23c4f",
+			"Rev": "4a23c4f7b9ced6b8e4476f2e021a61165153b71d"
+		},
+		{
+			"ImportPath": "github.com/gin-gonic/gin/binding",
+			"Comment": "v1.3.0-137-g4a23c4f",
+			"Rev": "4a23c4f7b9ced6b8e4476f2e021a61165153b71d"
+		},
+		{
+			"ImportPath": "github.com/gin-gonic/gin/internal/json",
+			"Comment": "v1.3.0-137-g4a23c4f",
+			"Rev": "4a23c4f7b9ced6b8e4476f2e021a61165153b71d"
+		},
+		{
+			"ImportPath": "github.com/gin-gonic/gin/render",
+			"Comment": "v1.3.0-137-g4a23c4f",
+			"Rev": "4a23c4f7b9ced6b8e4476f2e021a61165153b71d"
+		},
+		{
+			"ImportPath": "github.com/golang/protobuf/proto",
+			"Comment": "v1.3.0-2-gb5d812f",
+			"Rev": "b5d812f8a3706043e23a9cd5babf2e5423744d30"
+		},
+		{
+			"ImportPath": "github.com/json-iterator/go",
+			"Comment": "1.1.5-20-g0ff49de",
+			"Rev": "0ff49de124c6f76f8494e194af75bde0f1a49a29"
+		},
+		{
+			"ImportPath": "github.com/mattn/go-isatty",
+			"Comment": "v0.0.6",
+			"Rev": "369ecd8cea9851e459abb67eb171853e3986591e"
+		},
+		{
+			"ImportPath": "github.com/modern-go/concurrent",
+			"Comment": "1.0.3",
+			"Rev": "bacd9c7ef1dd9b15be4a9909b8ac7a4e313eec94"
+		},
+		{
+			"ImportPath": "github.com/modern-go/reflect2",
+			"Comment": "v1.0.1",
+			"Rev": "94122c33edd36123c84d5368cfb2b69df93a0ec8"
+		},
+		{
+			"ImportPath": "github.com/rs/zerolog",
+			"Comment": "v1.12.0-2-g651d361",
+			"Rev": "651d361cfeb9d0f5b9f1d14b162c66c82509ef6d"
+		},
+		{
+			"ImportPath": "github.com/rs/zerolog/internal/cbor",
+			"Comment": "v1.12.0-2-g651d361",
+			"Rev": "651d361cfeb9d0f5b9f1d14b162c66c82509ef6d"
+		},
+		{
+			"ImportPath": "github.com/rs/zerolog/internal/json",
+			"Comment": "v1.12.0-2-g651d361",
+			"Rev": "651d361cfeb9d0f5b9f1d14b162c66c82509ef6d"
+		},
+		{
+			"ImportPath": "github.com/rs/zerolog/log",
+			"Comment": "v1.12.0-2-g651d361",
+			"Rev": "651d361cfeb9d0f5b9f1d14b162c66c82509ef6d"
+		},
+		{
+			"ImportPath": "github.com/ugorji/go/codec",
+			"Comment": "v1.1.2-3-gc4a1c34",
+			"Rev": "c4a1c341dc9362948f6b026f9873abf42a0f6ce9"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/unix",
+			"Rev": "10058d7d4faa7dd5ef860cbd31af00903076e7b8"
+		},
+		{
+			"ImportPath": "gopkg.in/go-playground/validator.v8",
+			"Comment": "v8.18.2",
+			"Rev": "5f1438d3fca68893a817e4a66806cea46a9e4ebf"
+		},
+		{
+			"ImportPath": "gopkg.in/yaml.v2",
+			"Comment": "v2.2.2",
+			"Rev": "51d6538a90f86fe93ac480b35f37b2be17fef232"
+		}
+	]
+}
