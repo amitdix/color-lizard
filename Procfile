@@ -1,1 +1,1 @@
-web: ./bin/color-lizard
+web: color-lizard
