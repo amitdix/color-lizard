@@ -2,9 +2,8 @@ package main
 
 import (
 	"net/http"
-
-	"github.com/amitdix/color-lizard/config"
-	"github.com/amitdix/color-lizard/internal/controller"
+	"github.com/color-lizard/config"
+	"github.com/color-lizard/internal/controller"
 	"github.com/rs/zerolog/log"
 )
 
