@@ -1,10 +1,10 @@
 package main
 
 import (
+	"color-lizard/config"
+	"color-lizard/internal/controller"
 	"net/http"
 
-	"github.com/amitdix/color-lizard/config"
-	"github.com/amitdix/color-lizard/internal/controller"
 	"github.com/rs/zerolog/log"
 )
 
