@@ -2,8 +2,7 @@ package controller
 
 import (
 	"encoding/json"
-	"git.target.com/StoreDataMovement/api-rerouter/util"
-	"git.target.com/StoreDataMovement/color-lizard/config"
+	"color-lizard/config"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
@@ -42,13 +41,13 @@ func GetRouter(endpointMap map[string]config.Endpoint, ready *bool) (r *gin.Engi
 		body, err := context.GetRawData()
 		//bodyString := bytes.NewBuffer(body).String()
 		if err != nil || body == nil || len(body) == 0 {
-			context.JSON(http.StatusBadRequest, util.CreateError("Can't read request body", http.StatusBadRequest))
+                        context.JSON(http.StatusBadRequest, "Can't read request body")
 			return
 		}
 		var data map[string]config.Endpoint
 		err = json.Unmarshal(body, &data)
 		if err != nil || len(data) == 0 {
-			context.JSON(http.StatusBadRequest, util.CreateError("Bad format: data not valid JSON.", http.StatusBadRequest))
+                        context.JSON(http.StatusBadRequest, "Bad format: data not valid JSON.")
 			return
 		}
 		for k, v := range data {
