@@ -20,7 +20,7 @@ func main() {
 	}
 	router := controller.GetRouter(endpointMap, &ready)
 
-	http.ListenAndServe(":8881", router)
+	http.ListenAndServe(":4747", router)
 	log.Error().Err(err).Msg("Exited")
 
 }
