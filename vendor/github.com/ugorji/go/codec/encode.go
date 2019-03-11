@@ -279,10 +279,18 @@ type bufioEncWriter struct {
 	buf []byte
 	w   io.Writer
 	n   int
+	sz  int // buf size
+
+	// Extensions can call Encode() within a current Encode() call.
+	// We need to know when the top level Encode() call returns,
+	// so we can decide whether to Release() or not.
+	calls uint16 // what depth in mustDecode are we in now.
+
+	_ [6]uint8 // padding
 
 	bytesBufPooler
 
-	_ [3]uint64 // padding
+	_ [1]uint64 // padding
 	// a int
 	// b   [4]byte
 	// err
@@ -291,31 +299,39 @@ type bufioEncWriter struct {
 func (z *bufioEncWriter) reset(w io.Writer, bufsize int) {
 	z.w = w
 	z.n = 0
+	z.calls = 0
 	if bufsize <= 0 {
 		bufsize = defEncByteBufSize
 	}
-	if z.buf == nil {
-		z.buf = z.bytesBufPooler.get(bufsize)
-	} else if cap(z.buf) >= bufsize {
+	z.sz = bufsize
+	if cap(z.buf) >= bufsize {
 		z.buf = z.buf[:cap(z.buf)]
 	} else {
-		z.bytesBufPooler.end() // potentially return old one to pool
 		z.buf = z.bytesBufPooler.get(bufsize)
 		// z.buf = make([]byte, bufsize)
 	}
 }
 
+func (z *bufioEncWriter) release() {
+	z.buf = nil
+	z.bytesBufPooler.end()
+}
+
 //go:noinline - flush only called intermittently
-func (z *bufioEncWriter) flush() {
+func (z *bufioEncWriter) flushErr() (err error) {
 	n, err := z.w.Write(z.buf[:z.n])
 	z.n -= n
 	if z.n > 0 && err == nil {
 		err = io.ErrShortWrite
 	}
-	if err != nil {
-		if n > 0 && z.n > 0 {
-			copy(z.buf, z.buf[n:z.n+n])
-		}
+	if n > 0 && z.n > 0 {
+		copy(z.buf, z.buf[n:z.n+n])
+	}
+	return err
+}
+
+func (z *bufioEncWriter) flush() {
+	if err := z.flushErr(); err != nil {
 		panic(err)
 	}
 }
@@ -362,10 +378,11 @@ func (z *bufioEncWriter) writen2(b1, b2 byte) {
 	z.n += 2
 }
 
-func (z *bufioEncWriter) end() {
+func (z *bufioEncWriter) endErr() (err error) {
 	if z.n > 0 {
-		z.flush()
+		err = z.flushErr()
 	}
+	return
 }
 
 // ---------------------------------------------
@@ -388,8 +405,9 @@ func (z *bytesEncAppender) writen1(b1 byte) {
 func (z *bytesEncAppender) writen2(b1, b2 byte) {
 	z.b = append(z.b, b1, b2)
 }
-func (z *bytesEncAppender) end() {
+func (z *bytesEncAppender) endErr() error {
 	*(z.out) = z.b
+	return nil
 }
 func (z *bytesEncAppender) reset(in []byte, out *[]byte) {
 	z.b = in[:0]
@@ -1107,11 +1125,16 @@ func (z *encWriterSwitch) writen2(b1, b2 byte) {
 		z.wf.writen2(b1, b2)
 	}
 }
-func (z *encWriterSwitch) end() {
+func (z *encWriterSwitch) endErr() error {
 	if z.bytes {
-		z.wb.end()
-	} else {
-		z.wf.end()
+		return z.wb.endErr()
+	}
+	return z.wf.endErr()
+}
+
+func (z *encWriterSwitch) end() {
+	if err := z.endErr(); err != nil {
+		panic(err)
 	}
 }
 
@@ -1237,12 +1260,7 @@ type Encoder struct {
 
 	ci set
 
-	// Extensions can call Encode() within a current Encode() call.
-	// We need to know when the top level Encode() call returns,
-	// so we can decide whether to Release() or not.
-	calls uint16 // what depth in mustEncode are we in now.
-
-	b [(5 * 8) - 2]byte // for encoding chan or (non-addressable) [N]byte
+	b [(5 * 8)]byte // for encoding chan or (non-addressable) [N]byte
 
 	// ---- writable fields during execution --- *try* to keep in sep cache line
 
@@ -1298,7 +1316,6 @@ func (e *Encoder) resetCommon() {
 	_, e.js = e.hh.(*JsonHandle)
 	e.e.reset()
 	e.err = nil
-	e.calls = 0
 }
 
 // Reset resets the Encoder with a new output stream.
@@ -1450,8 +1467,13 @@ func (e *Encoder) Encode(v interface{}) (err error) {
 	}
 	if recoverPanicToErr {
 		defer func() {
-			e.w.end()
-			if x := recover(); x != nil {
+			// if error occurred during encoding, return that error;
+			// else if error occurred on end'ing (i.e. during flush), return that error.
+			err = e.w.endErr()
+			x := recover()
+			if x == nil {
+				e.err = err
+			} else {
 				panicValToErr(e, x, &e.err)
 				err = e.err
 			}
@@ -1473,23 +1495,26 @@ func (e *Encoder) MustEncode(v interface{}) {
 }
 
 func (e *Encoder) mustEncode(v interface{}) {
-	// ensure the bufioEncWriter buffer is not nil (e.g. if Release() was called)
-	if e.wf != nil && e.wf.buf == nil {
-		if e.h.WriterBufferSize > 0 {
-			e.wf.buf = e.wf.bytesBufPooler.get(e.h.WriterBufferSize)
-		} else {
-			e.wf.buf = e.wf.bytesBufPooler.get(defEncByteBufSize)
-		}
+	if e.wf == nil {
+		e.encode(v)
+		e.e.atEndOfEncode()
+		e.w.end()
+		return
 	}
 
-	e.calls++
+	if e.wf.buf == nil {
+		e.wf.buf = e.wf.bytesBufPooler.get(e.wf.sz)
+	}
+	e.wf.calls++
+
 	e.encode(v)
 	e.e.atEndOfEncode()
 	e.w.end()
-	e.calls--
 
-	if !e.h.ExplicitRelease && e.calls == 0 {
-		e.Release()
+	e.wf.calls--
+
+	if !e.h.ExplicitRelease && e.wf.calls == 0 {
+		e.wf.release()
 	}
 }
 
@@ -1514,12 +1539,8 @@ func (e *Encoder) finalize() {
 // It is important to call Release() when done with an Encoder, so those resources
 // are released instantly for use by subsequently created Encoders.
 func (e *Encoder) Release() {
-	if useFinalizers && removeFinalizerOnRelease {
-		runtime.SetFinalizer(e, nil)
-	}
 	if e.wf != nil {
-		e.wf.buf = nil
-		e.wf.bytesBufPooler.end()
+		e.wf.release()
 	}
 }
 

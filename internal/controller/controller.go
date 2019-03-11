@@ -5,8 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"color-lizard/config"
-
+	"github.com/color-lizard/config"
 	"github.com/gin-gonic/gin"
 )
 
