@@ -21,7 +21,6 @@ func main() {
 	}
 	router := controller.GetRouter(endpointMap, &ready)
 
-	port := os.Getenv("PORT")
 	http.ListenAndServe(":"+os.Getenv("PORT"), router)
 	log.Error().Err(err).Msg("Exited")
 
