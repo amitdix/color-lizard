@@ -1,8 +1,8 @@
 package main
 
 import (
-	"color-lizard/config"
-	"color-lizard/internal/controller"
+	"github.com/color-lizard/config"
+	"github.com/color-lizard/internal/controller"
 	"github.com/rs/zerolog/log"
 	"net/http"
 )
@@ -21,4 +21,3 @@ func main(){
 	log.Error().Err(err).Msg("Exited")
 
 }
-
