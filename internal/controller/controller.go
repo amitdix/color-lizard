@@ -2,7 +2,7 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/color-lizard/config"
+	"../../config"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"

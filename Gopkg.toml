@@ -26,14 +26,6 @@
 
 
 [[constraint]]
-  name = "git.target.com/StoreDataMovement/api-rerouter"
-  version = "0.1.3"
-
-[[constraint]]
-  name = "git.target.com/StoreDataMovement/sdputil"
-  version = "0.3.0"
-
-[[constraint]]
   name = "github.com/caarlos0/env"
   version = "3.5.0"
 
@@ -55,4 +47,3 @@
   install = [ "./cmd/...", "./foo" ]
   ensure = "false"
   additional-tools = ["github.com/golang-migrate/migrate"]
-
