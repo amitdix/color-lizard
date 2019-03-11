@@ -1,11 +1,9 @@
 package main
 
 import (
+	"color-lizard/config"
+	"color-lizard/internal/controller"
 	"net/http"
-
-	"config"
-
-	"internal/controller"
 
 	"github.com/rs/zerolog/log"
 )
