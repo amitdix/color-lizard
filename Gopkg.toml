@@ -36,3 +36,10 @@
 [[constraint]]
   name = "github.com/rs/zerolog"
   version = "1.12.0"
+  
+[metadata.heroku]
+  root-package = "github.com/heroku/fixture"
+  go-version = "go1.8.3"
+  install = [ "./cmd/...", "./foo" ]
+  ensure = "false"
+  additional-tools = ["github.com/golang-migrate/migrate"]
