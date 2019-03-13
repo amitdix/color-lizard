@@ -35,5 +35,14 @@
       "header1": "value1",
       "header2": "value2"
     }
+  },
+  "/myDummyPromotion": {
+    "method": "GET",
+    "status": 200,
+    "response": "{\"totalResults\":1,\"results\":[{\"promo_desc\":\"super promo\"}]}",
+    "headers": {
+      "header1": "value1",
+      "header2": "value2"
+    }
   }
 }
