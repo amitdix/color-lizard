@@ -39,7 +39,7 @@
   "/myDummyPromotion": {
     "method": "GET",
     "status": 200,
-    "response": "{\"totalResults\":1,\"results\":[{\"promo_desc\":\"super promo\"}]}",
+    "response": "{\"totalResults\":3,\"results\":[{\"promo_desc\":\"30 percent off\"},{\"promo_desc\":\"20 percent off on purchase of 2\"},{\"promo_desc\":\"buy one get one\"}]}",
     "headers": {
       "header1": "value1",
       "header2": "value2"
